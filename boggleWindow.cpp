@@ -3,12 +3,12 @@
 #include <QRadioButton>
 #include <QPushButton>
 
-#include "boggle.h"
+#include "boggleWindow.h"
 
 const int kSmallBoardSize = 4;
 const int kLargeBoardSize = 5;
 
-Boggle::Boggle(QWidget * parent)
+BoggleWindow::BoggleWindow(QWidget * parent)
  : QWidget(parent)
 {
     setUpBoggleBoard();
@@ -19,11 +19,11 @@ Boggle::Boggle(QWidget * parent)
 
 }
 
-Boggle::~Boggle()
+BoggleWindow::~BoggleWindow()
 {
 }
 
-void Boggle::layoutWidgets(QWidget *container) {
+void BoggleWindow::layoutWidgets(QWidget *container) {
     QGridLayout *layout = new QGridLayout(this);
     //first row is boggle board on left, options interfaces on right
     //make sure we have enough room for the biggest board
@@ -41,25 +41,25 @@ void Boggle::layoutWidgets(QWidget *container) {
     //QObject::connect(le, &QLineEdit::returnPressed(), label2, setText("blue"));
 }
 
-void Boggle::setUpTextEntry() {
+void BoggleWindow::setUpTextEntry() {
     textEntry = new QLineEdit();
     connect(textEntry, SIGNAL(returnPressed()), this, SLOT(updateHumanWordList()));
 }
 
-void Boggle::setUpFoundWordLists() {
+void BoggleWindow::setUpFoundWordLists() {
     computerFoundWords = new QTextEdit();
     computerFoundWords->setReadOnly(true);
     humanFoundWords = new QTextEdit();
     humanFoundWords->setReadOnly(true);
 }
 
-void Boggle::setUpBoggleBoard() {
+void BoggleWindow::setUpBoggleBoard() {
     //boardContainer = new QWidget();
     boggleBoard = new BoggleBoard();
     boggleBoard->setSize(kLargeBoardSize,kLargeBoardSize);
 }
 
-QWidget * Boggle::setUpOptionsContainer() {
+QWidget * BoggleWindow::setUpOptionsContainer() {
     QWidget *optionsContainer = new QWidget();
     QWidget *sizeOptions = setUpSizeOptions();
     QLayout *scoreBoxes = setUpScoreBox();
@@ -69,7 +69,7 @@ QWidget * Boggle::setUpOptionsContainer() {
     return optionsContainer;
 }
 
-QWidget * Boggle::setUpSizeOptions() {
+QWidget * BoggleWindow::setUpSizeOptions() {
     QGroupBox *sizeGroup = new QGroupBox("Board Size");
     QRadioButton * rbSmallSizeSelect = new QRadioButton("4x4", sizeGroup);
     connect(rbSmallSizeSelect, SIGNAL(clicked()), this, SLOT(boardSizeFour()));
@@ -84,7 +84,7 @@ QWidget * Boggle::setUpSizeOptions() {
     return sizeGroup;
 }
 
-QLayout * Boggle::setUpScoreBox() {
+QLayout * BoggleWindow::setUpScoreBox() {
     QGroupBox *humanScoreBox = new QGroupBox("Your score");
     QGroupBox *compScoreBox = new QGroupBox("Computer score");
 
@@ -104,19 +104,19 @@ QLayout * Boggle::setUpScoreBox() {
     return layout;
 }
 
-void Boggle::boardSizeFour() {
+void BoggleWindow::boardSizeFour() {
     updateBoardSize(4);
 }
 
-void Boggle::boardSizeFive() {
+void BoggleWindow::boardSizeFive() {
     updateBoardSize(5);
     }
 
-void Boggle::updateBoardSize(int size) {
+void BoggleWindow::updateBoardSize(int size) {
     boggleBoard->setSize(size,size);
 }
 
-void Boggle::updateHumanWordList() {
+void BoggleWindow::updateHumanWordList() {
     QString text = textEntry->text();
     QString currentWords = humanFoundWords->toPlainText();
     humanFoundWords->setText(currentWords+" "+text);

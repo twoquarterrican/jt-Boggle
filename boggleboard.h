@@ -25,6 +25,7 @@ public slots:
 private:
     int numCols;
     int numRows;
+    QVector<QGraphicsSimpleTextItem*> lettersFacing;
     
 };
 

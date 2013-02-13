@@ -1,5 +1,5 @@
-#ifndef BOGGLE_H
-#define BOGGLE_H
+#ifndef BOGGLEWINDOW_H
+#define BOGGLEWINDOW_H
 
 #include <QWidget>
 #include <QTextEdit>
@@ -14,13 +14,13 @@ const int kWindowYMin = 300;
 const int kTextEntryYMin = 20;
 const int kDefaultBoardSize = 4;
 
-class Boggle : public QWidget
+class BoggleWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    Boggle(QWidget * parent=0);
-    ~Boggle();
+    BoggleWindow(QWidget * parent=0);
+    ~BoggleWindow();
 
 private:
     BoggleBoard *boggleBoard;
@@ -48,4 +48,4 @@ public slots:
     void updateHumanWordList();
 };
 
-#endif // BOGGLE_H
+#endif // BOGGLEWINDOW_H

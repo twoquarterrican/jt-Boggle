@@ -1,13 +1,16 @@
-#include "boggle.h"
+#include "boggleWindow.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Boggle boggle;
+    BoggleWindow boggle;
     boggle.setWindowTitle("this is boggle window");
     boggle.show();
+
+
+
     //boggle.show();
     //QWidget *widget = new QWidget();
     //QGraphicsScene scene;
