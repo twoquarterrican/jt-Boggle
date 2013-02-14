@@ -14,9 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     boggleboard.cpp \
-    boggleWindow.cpp
+    boggleWindow.cpp \
+    bogglegameplay.cpp
 
 HEADERS  += \
     boggleboard.h \
-    boggleWindow.h
+    boggleWindow.h \
+    bogglegameplay.h \
+    boggleconstants.h \
+    sleep.h
 

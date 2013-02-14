@@ -6,13 +6,10 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QLabel>
+#include <QRadioButton>
 
 #include "boggleboard.h"
-
-const int kWindowXMin = 300;
-const int kWindowYMin = 300;
-const int kTextEntryYMin = 20;
-const int kDefaultBoardSize = 4;
+#include "boggleconstants.h"
 
 class BoggleWindow : public QWidget
 {
@@ -21,31 +18,47 @@ class BoggleWindow : public QWidget
 public:
     BoggleWindow(QWidget * parent=0);
     ~BoggleWindow();
+	void drawBoard(QVector<QString> &letters,int numRows, int numCols);
+	void highlightCube(int row, int col, bool flag);
+	void labelCube(int row, int col, QString &letter);
+	void setBoard(QVector<QString> &letters);
 
 private:
     BoggleBoard *boggleBoard;
     //QWidget *boardContainer;
-    //QWidget *optionsContainer;
+    QWidget *optionsContainer;
     QTextEdit *computerFoundWords;
     QTextEdit *humanFoundWords;
     QLineEdit *textEntry;
     QLabel *humanScore;
     QLabel *compScore;
-    void updateBoardSize(int size);
+    QRadioButton *rbSmallSizeSelect;
+    QRadioButton *rbLargeSizeSelect;
+
+    void updateBoardSize(BoardSize size);
     void setUpBoggleBoard();
-    QWidget *setUpOptionsContainer();
+    void setUpOptionsContainer();
+    void setUpFoundWordLists();
+    QLayout * setUpTextEntry();
+    void layoutWidgets(QLayout *layout4);
     QWidget *setUpSizeOptions();
     QLayout *setUpScoreBox();
-    void setUpFoundWordLists();
-    void setUpTextEntry();
-    void layoutWidgets(QWidget *container);
+
+//    void setBoard(QVector<QString> &letters, int nrows, int ncols);
 
 signals:
+	void boardSizeChanged(BoardSize newSize);
+	void shuffleBoard(void);
+	void signalHumanTurnBegin(void);
+	void signalHumanTurnEnd(void);
 
 public slots:
-    void boardSizeFour();
-    void boardSizeFive();
-    void updateHumanWordList();
+    void setBoardSizeSmall(void);
+    void setBoardSizeLarge(void);
+	void shuffleButtonPressed(void);
+    void updateHumanWordList(void);
+	void humanTurnBegin(void);
+	void humanTurnEnd(void);
 };
 
 #endif // BOGGLEWINDOW_H

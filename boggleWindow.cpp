@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <QGroupBox>
 #include <QLabel>
 #include <QRadioButton>
@@ -5,31 +6,28 @@
 
 #include "boggleWindow.h"
 
-const int kSmallBoardSize = 4;
-const int kLargeBoardSize = 5;
-
 BoggleWindow::BoggleWindow(QWidget * parent)
  : QWidget(parent)
 {
+    this->setWindowTitle("Boggle");
     setUpBoggleBoard();
-    QWidget *container = setUpOptionsContainer();
+    setUpOptionsContainer();
     setUpFoundWordLists();
-    setUpTextEntry();
-    layoutWidgets(container);
-
+    QLayout *layout4 = setUpTextEntry();
+    layoutWidgets(layout4);
 }
 
 BoggleWindow::~BoggleWindow()
 {
 }
 
-void BoggleWindow::layoutWidgets(QWidget *container) {
+void BoggleWindow::layoutWidgets(QLayout * layout4) {
     QGridLayout *layout = new QGridLayout(this);
     //first row is boggle board on left, options interfaces on right
     //make sure we have enough room for the biggest board
-    layout->setRowMinimumHeight(0,kBoggleCubeHeight*kLargeBoardSize);
-    layout->addWidget(boggleBoard,0,0,Qt::AlignTop);
-    layout->addWidget(container,0,1);
+    //layout->setRowMinimumHeight(0,kBoggleCubeHeight*SMALL);
+    layout->addWidget(boggleBoard,0,0,Qt::AlignCenter);
+    layout->addWidget(optionsContainer,0,1);
     //second row is human player's list of words on left,
     //computer player's list of words on right
     layout->setRowMinimumHeight(1,kWindowYMin/3-kTextEntryYMin);
@@ -37,13 +35,22 @@ void BoggleWindow::layoutWidgets(QWidget *container) {
     layout->addWidget(computerFoundWords,1,1);
     //third row is text entry box and "press enter" button
     layout->setRowMinimumHeight(2,kTextEntryYMin);
-    layout->addWidget(textEntry,2,0);
+    layout->addLayout(layout4,2,0,1,2);
     //QObject::connect(le, &QLineEdit::returnPressed(), label2, setText("blue"));
 }
 
-void BoggleWindow::setUpTextEntry() {
+QLayout * BoggleWindow::setUpTextEntry() {
     textEntry = new QLineEdit();
     connect(textEntry, SIGNAL(returnPressed()), this, SLOT(updateHumanWordList()));
+	QPushButton * startButton = new QPushButton("Start");
+	connect(startButton, SIGNAL(pressed()), this, SLOT(humanTurnBegin()));
+	QPushButton * doneButton = new QPushButton("Done");
+	connect(doneButton, SIGNAL(pressed()), this, SLOT(humanTurnEnd()));
+	QHBoxLayout * layout = new QHBoxLayout();
+	layout->addWidget(textEntry);
+	layout->addWidget(startButton);
+	layout->addWidget(doneButton);
+	return layout;
 }
 
 void BoggleWindow::setUpFoundWordLists() {
@@ -54,29 +61,31 @@ void BoggleWindow::setUpFoundWordLists() {
 }
 
 void BoggleWindow::setUpBoggleBoard() {
-    //boardContainer = new QWidget();
     boggleBoard = new BoggleBoard();
-    boggleBoard->setSize(kLargeBoardSize,kLargeBoardSize);
+	/*
+	 *container->setFixedSize(
+	 *        QSize(kLargeBoardSize*kBoggleCubeWidth,kLargeBoardSize*kBoggleCubeHeight)
+	 *        );
+	 */
 }
 
-QWidget * BoggleWindow::setUpOptionsContainer() {
-    QWidget *optionsContainer = new QWidget();
+void BoggleWindow::setUpOptionsContainer() {
+    optionsContainer = new QWidget();
     QWidget *sizeOptions = setUpSizeOptions();
     QLayout *scoreBoxes = setUpScoreBox();
     QGridLayout *layout = new QGridLayout(optionsContainer);
     layout->addWidget(sizeOptions,0,0);
     layout->addLayout(scoreBoxes,1,0);
-    return optionsContainer;
 }
 
 QWidget * BoggleWindow::setUpSizeOptions() {
     QGroupBox *sizeGroup = new QGroupBox("Board Size");
-    QRadioButton * rbSmallSizeSelect = new QRadioButton("4x4", sizeGroup);
-    connect(rbSmallSizeSelect, SIGNAL(clicked()), this, SLOT(boardSizeFour()));
-    QRadioButton * rbLargeSizeSelect = new QRadioButton("5x5", sizeGroup);
-    connect(rbLargeSizeSelect, SIGNAL(clicked()), this, SLOT(boardSizeFive()));
+    rbSmallSizeSelect = new QRadioButton("4x4", sizeGroup);
+    connect(rbSmallSizeSelect, SIGNAL(clicked()), this, SLOT(setBoardSizeSmall()));
+    rbLargeSizeSelect = new QRadioButton("5x5", sizeGroup);
+    connect(rbLargeSizeSelect, SIGNAL(clicked()), this, SLOT(setBoardSizeLarge()));
     QPushButton * pbScramble = new QPushButton("Scramble");
-    connect(pbScramble, SIGNAL(pressed()), boggleBoard, SLOT(scramble()));
+    connect(pbScramble, SIGNAL(pressed()), this, SLOT(shuffleButtonPressed()));
     QHBoxLayout *layout = new QHBoxLayout(sizeGroup);
     layout->addWidget(rbSmallSizeSelect);
     layout->addWidget(rbLargeSizeSelect);
@@ -96,24 +105,32 @@ QLayout * BoggleWindow::setUpScoreBox() {
     layout = new QGridLayout(compScoreBox);
     layout->addWidget(compScore,0,0,Qt::AlignCenter);
 
+    //QPushButton *startGameButton = new QPushButton("Start");
+    //connect(startGameButton, SIGNAL(pressed()), game, SLOT(startGame()));
+
     //the layout for the options group
     layout = new QGridLayout();
     layout->addWidget(humanScoreBox,1,0);
     layout->addWidget(compScoreBox,1,1);
+    //layout->addWidget(startGameButton,2,0);
 
     return layout;
 }
 
-void BoggleWindow::boardSizeFour() {
-    updateBoardSize(4);
+void BoggleWindow::setBoardSizeSmall() {
+    updateBoardSize(SMALL);
 }
 
-void BoggleWindow::boardSizeFive() {
-    updateBoardSize(5);
-    }
+void BoggleWindow::setBoardSizeLarge() {
+    updateBoardSize(LARGE);
+}
 
-void BoggleWindow::updateBoardSize(int size) {
-    boggleBoard->setSize(size,size);
+void BoggleWindow::shuffleButtonPressed() {
+	emit shuffleBoard();
+}
+
+void BoggleWindow::updateBoardSize(BoardSize size) {
+	emit boardSizeChanged(size);
 }
 
 void BoggleWindow::updateHumanWordList() {
@@ -121,4 +138,22 @@ void BoggleWindow::updateHumanWordList() {
     QString currentWords = humanFoundWords->toPlainText();
     humanFoundWords->setText(currentWords+" "+text);
     textEntry->setText("");
+}
+
+void BoggleWindow::drawBoard(QVector<QString> &letters, int nrows, int ncols) {
+	boggleBoard->drawBoard(letters, nrows, ncols);
+    bool small = false;
+    bool large = false;
+    if (nrows == SMALL && ncols == SMALL) small = true;
+    if (nrows == LARGE && ncols == LARGE) large = true;
+    rbSmallSizeSelect->setChecked(small);
+    rbLargeSizeSelect->setChecked(large);
+}
+
+void BoggleWindow::humanTurnBegin() {
+	emit signalHumanTurnBegin();
+}
+
+void BoggleWindow::humanTurnEnd() {
+	emit signalHumanTurnEnd();
 }
