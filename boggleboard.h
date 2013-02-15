@@ -5,7 +5,10 @@
 #include <QGraphicsScene>
 #include <QRectF>
 #include <vector>
+#include <QSequentialAnimationGroup>
+#include <QQueue>
 #include "boggleconstants.h"
+#include "bogglecube.h"
 
 class BoggleBoard : public QGraphicsView
 {
@@ -14,22 +17,17 @@ class BoggleBoard : public QGraphicsView
 public:
     explicit BoggleBoard(QWidget * parent=0 );
     ~BoggleBoard();
-	void drawCube(int row, int col, QString &letter, bool highlight);
 	void drawBoard(QVector<QString> &letters, int nrows, int ncols);
+	void highlightCube(int, bool);
+	void turnOffHighlighting(void);
 
-signals:
-    
 public slots:
-    //void setSize(int nCols, int nRows);
-    //void highlightCube(int row, int col, bool highlight);
-    //void scramble();
+	void startNextAnimation(void);
 
 private:
 	QGraphicsScene *scene;
-	QVector<QGraphicsRectItem*> *boardSquares;
-    void setBoard(QVector<QString> &letters, int nRows, int nCols);
-	void initialize(QVector<QRectF> &boardSquares);
-	void initialize(QGraphicsScene &scene);
+	QVector<BoggleCube*> *boardSquares;
+	QQueue<QPropertyAnimation*> *animQueue;
 };
 
 #endif BOGGLEBOARD_H

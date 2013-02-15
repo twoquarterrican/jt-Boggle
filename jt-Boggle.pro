@@ -15,12 +15,25 @@ TEMPLATE = app
 SOURCES += main.cpp\
     boggleboard.cpp \
     boggleWindow.cpp \
-    bogglegameplay.cpp
+    bogglegameplay.cpp \
+    lexicon.cpp \
+    bogglecube.cpp
 
 HEADERS  += \
     boggleboard.h \
     boggleWindow.h \
     bogglegameplay.h \
     boggleconstants.h \
-    sleep.h
+    sleep.h \
+    lexicon.h \
+    bogglecube.h
+
+OTHER_FILES += \
+    EnglishWords.dat \
+    test.txt \
+    en_US.dic \
+    dict.txt
+
+RESOURCES += \
+    dictionary.qrc
 

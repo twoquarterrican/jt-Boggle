@@ -7,6 +7,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QRadioButton>
+#include <QPushButton>
 
 #include "boggleboard.h"
 #include "boggleconstants.h"
@@ -18,10 +19,13 @@ class BoggleWindow : public QWidget
 public:
     BoggleWindow(QWidget * parent=0);
     ~BoggleWindow();
-	void drawBoard(QVector<QString> &letters,int numRows, int numCols);
-	void highlightCube(int row, int col, bool flag);
-	void labelCube(int row, int col, QString &letter);
-	void setBoard(QVector<QString> &letters);
+	void recordWordForPlayer(QString&, Player);
+	void drawBoard(QVector<QString>&,int,int);
+	void highlightCube(int,bool);
+	void setBoard(QVector<QString>&);
+	void notify(const QString&);
+	void updateScore(int, Player);
+	void turnOffHighlighting(void);
 
 private:
     BoggleBoard *boggleBoard;
@@ -34,31 +38,42 @@ private:
     QLabel *compScore;
     QRadioButton *rbSmallSizeSelect;
     QRadioButton *rbLargeSizeSelect;
+	QPushButton *shuffleButton;
+	QPushButton *doneButton;
+	QPushButton *startButton;
+	QLabel *notificationLabel;
 
     void updateBoardSize(BoardSize size);
     void setUpBoggleBoard();
     void setUpOptionsContainer();
     void setUpFoundWordLists();
+	QLayout * setUpNotificationArea();
     QLayout * setUpTextEntry();
-    void layoutWidgets(QLayout *layout4);
+    void layoutWidgets(QLayout* layout3, QLayout *layout4);
     QWidget *setUpSizeOptions();
     QLayout *setUpScoreBox();
 
 //    void setBoard(QVector<QString> &letters, int nrows, int ncols);
 
 signals:
-	void boardSizeChanged(BoardSize newSize);
-	void shuffleBoard(void);
-	void signalHumanTurnBegin(void);
-	void signalHumanTurnEnd(void);
+	void signalBoardSizeChanged(BoardSize newSize);
+	void signalShuffleBoard(void);
+	void signalHumanDone(void);
+	void signalTextEntrySubmitted(QLineEdit *);
 
 public slots:
+	//these slots will be signaled by game logic
+	void humanTurnBegin(void);
+	void computerTurnBegin(void);
+	void computerTurnEnd(void);
+
+	//these slots will be signaled by user input
     void setBoardSizeSmall(void);
     void setBoardSizeLarge(void);
 	void shuffleButtonPressed(void);
-    void updateHumanWordList(void);
-	void humanTurnBegin(void);
-	void humanTurnEnd(void);
+    void textEntrySubmitted(void);
+	void startButtonPressed(void);
+	void doneButtonPressed(void);
 };
 
 #endif // BOGGLEWINDOW_H
