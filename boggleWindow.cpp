@@ -26,7 +26,7 @@ void BoggleWindow::layoutWidgets(QLayout *layout3, QLayout * layout4) {
     //first row is boggle board on left, options interfaces on right
     //make sure we have enough room for the biggest board
     //layout->setRowMinimumHeight(0,kBoggleCubeHeight*SMALL);
-    layout->addWidget(boggleBoard,0,0,Qt::AlignCenter);
+    layout->addWidget(boggleboard,0,0,Qt::AlignCenter);
     layout->addWidget(optionsContainer,0,1);
     //second row is human player's list of words on left,
     //computer player's list of words on right
@@ -70,7 +70,7 @@ void BoggleWindow::setUpFoundWordLists() {
 }
 
 void BoggleWindow::setUpBoggleBoard() {
-    boggleBoard = new BoggleBoard();
+    boggleboard = new BoggleBoard();
 	/*
 	 *container->setFixedSize(
 	 *        QSize(kLargeBoardSize*kBoggleCubeWidth,kLargeBoardSize*kBoggleCubeHeight)
@@ -154,6 +154,10 @@ void BoggleWindow::doneButtonPressed() {
 	emit signalHumanDone();
 }
 
+void BoggleWindow::startTestComputerAnimation() {
+	boggleboard->startNextAnimation();
+}
+
 void BoggleWindow::humanTurnBegin() {
 	startButton->setEnabled(false);
 	doneButton->setEnabled(true);
@@ -180,7 +184,7 @@ void BoggleWindow::computerTurnEnd() {
 }
 
 void BoggleWindow::drawBoard(QVector<QString> &letters, int nrows, int ncols) {
-	boggleBoard->drawBoard(letters, nrows, ncols);
+    boggleboard->drawBoard(letters, nrows, ncols);
     bool small = false;
     bool large = false;
     if (nrows == SMALL && ncols == SMALL) small = true;
@@ -212,7 +216,7 @@ void BoggleWindow::notify(const QString &message) {
 }
 
 void BoggleWindow::highlightCube(int index, bool highlight) {
-    boggleBoard->highlightCube(index,highlight);
+    boggleboard->highlightCube(index,highlight);
 	//this->repaint();
 	//this->update();
 
@@ -225,6 +229,6 @@ void BoggleWindow::highlightCube(int index, bool highlight) {
 }
 
 void BoggleWindow::turnOffHighlighting() {
-    boggleBoard->turnOffHighlighting();
+    boggleboard->turnOffHighlighting();
 	this->repaint();
 }

@@ -23,11 +23,15 @@ public:
 
 public slots:
 	void startNextAnimation(void);
+	void startNextTestAnimation(void);
+	void kickStartAnimationQueue(void);
 
 private:
 	QGraphicsScene *scene;
 	QVector<BoggleCube*> *boardSquares;
 	QQueue<QPropertyAnimation*> *animQueue;
+	bool animCurrentlyPlaying;
+	void startTestAnimation(void);
 };
 
 #endif BOGGLEBOARD_H

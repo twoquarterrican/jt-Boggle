@@ -26,9 +26,10 @@ public:
 	void notify(const QString&);
 	void updateScore(int, Player);
 	void turnOffHighlighting(void);
+	void startTestComputerAnimation(void);
 
 private:
-    BoggleBoard *boggleBoard;
+    BoggleBoard *boggleboard;
     //QWidget *boardContainer;
     QWidget *optionsContainer;
     QTextEdit *computerFoundWords;

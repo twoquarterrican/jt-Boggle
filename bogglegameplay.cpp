@@ -58,7 +58,10 @@ void BoggleGamePlay::humanTurnBegin() {
 	scores[HUMAN] = scores[COMPUTER] = 0;
 	bogglewindow->updateScore(0, HUMAN);
 	bogglewindow->updateScore(0, COMPUTER);
+	//reset words used
 	wordsUsed.clear();
+	//reset highlighting
+	bogglewindow->turnOffHighlighting();
 }
 
 void BoggleGamePlay::computerTurnBegin() {
@@ -71,7 +74,7 @@ void BoggleGamePlay::computerTurnBegin() {
 void BoggleGamePlay::computerTurnEnd() {
 	emit signalComputerTurnEnd();
 	currentPlayer = NONE;
-	bogglewindow->turnOffHighlighting();
+	bogglewindow->startTestComputerAnimation();
 	displayResults();
 }
 
@@ -347,6 +350,7 @@ void BoggleGamePlay::computerFindWords() {
 			// start to build the word
             QString word = "";
 			word += letterAt(row,col);
+			highlightCube(row,col,true);
 			// Note that in this implementation, the currentLocation variable
 			// is added to the set of locations, but we also pass it along
 			// as an argument since the Set data construct will not tell us
@@ -356,11 +360,11 @@ void BoggleGamePlay::computerFindWords() {
 				usedLocations,
 				currentLocation,
 				word);
+			highlightCube(row,col,false);
 		}
 	}
 }
 
-int i = 0;
 void BoggleGamePlay::computerFindWords(
         QSet<QString> &wordsUsed,
 		QSet<BoardLocation> &usedLocations,
@@ -404,6 +408,7 @@ void BoggleGamePlay::computerFindWords(
 					// of any word in the lexicon
 					wordSoFar += letterAt(row,col);
 					if (englishLex.containsPrefix(wordSoFar)) {
+						highlightCube(row,col,true);
 						//record that we have used this location,
 						//so we don't use it again in this branch
                         usedLocations.insert(nextLocation);
@@ -416,6 +421,7 @@ void BoggleGamePlay::computerFindWords(
 					} 
 					// roll back the addition of the character at (row,col)
 					wordSoFar.remove(wordSoFar.length()-1,1);
+					highlightCube(row,col,false);
 					// roll back the addition of this location to the set of chosen
 					// Locations
                     usedLocations.remove(nextLocation);

@@ -11,7 +11,7 @@ const int kTextEntryYMin = 20;
 const QColor kDefaultSquareColor = QColor("burlywood");
 const QColor kHighlightSquareColor = QColor("chocolate");
 const int kPauseTime = 100;
-const int kHighlightDuration = 800;
+const int kHighlightDuration = 10;
 
 enum BoardSize { SMALL=4, LARGE=5 };
 const BoardSize kDefaultBoardSize = SMALL;
